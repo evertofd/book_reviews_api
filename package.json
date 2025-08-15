@@ -1,0 +1,44 @@
+{
+  "name": "book_reviews_api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node ./node_modules/moleculer/bin/moleculer-runner.js --hot --repl src/services/**/*.service.ts",
+    "build": "tsc",
+    "start": "npm run build && moleculer-runner dist/services/**/*.service.js",
+    "clean": "rimraf dist",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.1",
+    "joi": "^18.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "moleculer": "^0.14.35",
+    "moleculer-db": "^0.8.29",
+    "moleculer-db-adapter-mongoose": "^0.10.1",
+    "moleculer-web": "^0.10.8",
+    "mongoose": "^8.17.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.39.1",
+    "@typescript-eslint/parser": "^8.39.1",
+    "eslint": "^9.33.0",
+    "jest": "^30.0.5",
+    "nodemon": "^3.1.10",
+    "rimraf": "^6.0.1",
+    "ts-jest": "^29.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
