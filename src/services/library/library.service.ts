@@ -8,7 +8,8 @@ import {
   getMyBooksHandler,
   getBookHandler,
   updateBookHandler,
-  deleteBookHandler
+  deleteBookHandler,
+  getCoverHandler
 } from './handlers';
 
 dotenv.config();
@@ -43,7 +44,14 @@ export default class LibraryService extends Service {
         getMyBooks: {
           params: {
             limit: { type: 'number', integer: true, min: 1, max: 100, optional: true },
-            offset: { type: 'number', integer: true, min: 0, optional: true }
+            offset: { type: 'number', integer: true, min: 0, optional: true },
+            search: { type: 'string', min: 1, max: 100, optional: true },
+            sortBy: {
+              type: 'enum',
+              values: ['rating-asc', 'rating-desc', 'title-asc', 'title-desc', 'newest', 'oldest'],
+              optional: true
+            },
+            excludeNoReview: { type: 'boolean', optional: true }
           },
           handler: getMyBooksHandler
         },
@@ -66,6 +74,12 @@ export default class LibraryService extends Service {
             id: { type: 'string', min: 1 }
           },
           handler: deleteBookHandler
+        },
+        getCover: {
+          params: {
+            id: { type: 'string', min: 1 }
+          },
+          handler: getCoverHandler
         }
       },
       created: this.serviceCreated,

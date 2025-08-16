@@ -25,22 +25,25 @@ export default class GatewayService extends Service {
           credentials: true
         },
 
-        
+
         routes: [
           {
-            
+
             path: '/api/public',
             whitelist: [
               'auth.health',
               'auth.register',
               'auth.login',
-              'books.health'
+              'books.health',
+              'library.getCover'
             ],
             aliases: {
               'GET /auth/health': 'auth.health',
               'POST /auth/register': 'auth.register',
               'POST /auth/login': 'auth.login',
-              'GET /books/health': 'books.health'
+              'GET /books/health': 'books.health',
+              'GET /books/library/front-cover/:id': 'library.getCover',
+
             },
 
             bodyParsers: {
@@ -57,7 +60,7 @@ export default class GatewayService extends Service {
                 limit: '10MB'
               }
             },
-            mappingPolicy: 'all', 
+            mappingPolicy: 'all',
             logging: true
           },
 

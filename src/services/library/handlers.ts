@@ -5,7 +5,9 @@ import {
   getBookById, 
   updateBookReview, 
   deleteBookFromLibrary,
-  checkIfBookExists
+  checkIfBookExists,
+  getBookCover,
+  getUserLibraryStats
 } from './methods';
 
 
@@ -46,15 +48,38 @@ export const saveBookHandler = async (ctx: Context) => {
 
 export const getMyBooksHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
-  const { limit = 20, offset = 0 } = ctx.params as any; // Cast simple
+  const { 
+    limit = 20, 
+    offset = 0, 
+    search, 
+    sortBy, 
+    excludeNoReview 
+  } = ctx.params as any;
   const logger = ctx.service?.logger || console;
-  
   try {
-    const books = await getUserBooks(user._id, limit, offset);    
+    const books = await getUserBooks(
+      user._id, 
+      limit, 
+      offset, 
+      search, 
+      sortBy, 
+      excludeNoReview === 'true' || excludeNoReview === true
+    );
+    
+    const stats = await getUserLibraryStats(user._id);
+    
+    logger.info(`Encontrados ${books.length} libros en biblioteca`);
+    
     return {
       success: true,
       books,
       total: books.length,
+      stats,
+      filters: {
+        search: search || null,
+        sortBy: sortBy || 'newest',
+        excludeNoReview: excludeNoReview === 'true' || excludeNoReview === true
+      },
       user: user.alias
     };
     
@@ -67,7 +92,7 @@ export const getMyBooksHandler = async (ctx: Context) => {
 
 export const getBookHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
-  const { id } = ctx.params as any; // Cast simple
+  const { id } = ctx.params as any; 
   const logger = ctx.service?.logger || console;
   
   try {
@@ -138,5 +163,41 @@ export const deleteBookHandler = async (ctx: Context) => {
   } catch (error: any) {
     logger.error(`Error eliminando libro:`, error.message);
     throw new Error(`Error al eliminar libro: ${error.message}`);
+  }
+};
+
+export const getCoverHandler = async (ctx: Context) => {
+  const { id } = ctx.params as any;
+  const logger = ctx.service?.logger || console;
+  
+  try {    
+    const cover = await getBookCover(id);
+    
+    if (!cover || !cover.coverBase64) {
+      throw new Error('Portada no encontrada');
+    }
+    
+    const matches = cover.coverBase64.match(/^data:image\/([a-zA-Z]*);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      throw new Error('Formato de imagen inválido');
+    }
+    
+    const imageType = matches[1]; 
+    const imageData = matches[2]; 
+    
+    const imageBuffer = Buffer.from(imageData, 'base64');
+    
+    (ctx.meta as any).$responseType = `image/${imageType}`;
+    (ctx.meta as any).$responseHeaders = {
+      'Content-Type': `image/${imageType}`,
+      'Content-Length': imageBuffer.length,
+      'Cache-Control': 'public, max-age=86400'
+    };
+    
+    return imageBuffer;
+    
+  } catch (error: any) {
+    logger.error(`Error obteniendo portada:`, error.message);
+    throw new Error(`Error al obtener portada: ${error.message}`);
   }
 };
