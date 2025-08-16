@@ -1,28 +1,22 @@
 import { Document, ObjectId } from 'mongoose';
 
-/**
- * Interface base para todos los documentos de MongoDB
- */
 export interface BaseDocument extends Document {
   _id: ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
-/**
- * Interface para el modelo User
- */
 export interface IUser extends BaseDocument {
   email: string;
   password: string;
   alias: string;
   createdAt: Date;
   updatedAt: Date;
+  
+  comparePassword(candidatePassword: string): Promise<boolean>;
+  toPublicJSON(): Omit<IUser, 'password'>;
 }
 
-/**
- * Interface para el modelo SavedBook (Mi Biblioteca)
- */
 export interface ISavedBook extends BaseDocument {
   userId: ObjectId;
   title: string;
@@ -30,11 +24,13 @@ export interface ISavedBook extends BaseDocument {
   publishYear: string;
   coverBase64: string;
   review: string;
-  rating: number; // 1-5
+  rating: number; 
   openLibraryId?: string;
   isbn?: string;
   createdAt: Date;
   updatedAt: Date;
+  
+  toPublicJSON(): any;
 }
 
 
@@ -42,6 +38,8 @@ export interface ISearchHistory extends BaseDocument {
   userId: ObjectId;
   query: string;
   createdAt: Date;
+  
+  toPublicJSON(): { query: string; createdAt: Date };
 }
 
 
