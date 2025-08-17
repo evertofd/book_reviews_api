@@ -34,7 +34,7 @@ export default class LibraryService extends Service {
             author: { type: 'string', min: 1, max: 100 },
             publishYear: { type: 'string' },
             coverBase64: { type: 'string', optional: true },
-            review: { type: 'string', min: 1, max: 500 },
+            review: { type: 'string', max: 500 ,optional: true},
             rating: { type: 'number', integer: true, min: 1, max: 5 },
             openLibraryId: { type: 'string', optional: true },
             isbn: { type: 'string', optional: true }
@@ -51,7 +51,7 @@ export default class LibraryService extends Service {
               values: ['rating-asc', 'rating-desc', 'title-asc', 'title-desc', 'newest', 'oldest'],
               optional: true
             },
-            excludeNoReview: { type: 'boolean', optional: true }
+            excludeNoReview: { type: 'string', optional: true }
           },
           handler: getMyBooksHandler
         },

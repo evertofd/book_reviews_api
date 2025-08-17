@@ -3,7 +3,8 @@ import {
   RegisterParams,
   LoginParams,
   AuthResponse,
-  VerifyTokenParams
+  VerifyTokenParams,
+  AuthContext
 } from '../../types/auth.types';
 import {
   generateToken,
@@ -123,11 +124,13 @@ export const logoutHandler = (ctx: Context): object => {
 };
 
 
-export const getCurrentUserHandler = async (ctx: Context<VerifyTokenParams>): Promise<object> => {
+export const getCurrentUserHandler = async (ctx: Context<AuthContext>): Promise<object> => {
   try {
-    const { token } = ctx.params;
-    const { user } = await verifyUserExistsByToken(token);
-
+    
+    if (!(ctx.meta as any).user)  {
+       throw new Error('Unauthorized');
+    }
+    const { user } = await verifyUserExistsByToken((ctx.meta as any).token); 
     return {
       success: true,
       user: user.toPublicJSON()

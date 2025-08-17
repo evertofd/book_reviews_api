@@ -14,7 +14,7 @@ export default class GatewayService extends Service {
       mixins: [ApiGateway],
 
       settings: {
-        port: process.env.PORT || 3000,
+        port: process.env.PORT || 3001,
 
         cors: {
           origin: [
@@ -43,7 +43,6 @@ export default class GatewayService extends Service {
               'POST /auth/login': 'auth.login',
               'GET /books/health': 'books.health',
               'GET /books/library/front-cover/:id': 'library.getCover',
-
             },
 
             bodyParsers: {

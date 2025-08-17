@@ -28,7 +28,7 @@ export default class BooksService extends Service {
           },
           params: {
             q: { type: 'string', min: 1, max: 100 },
-            limit: { type: 'number', integer: true, min: 1, max: 50, optional: true },
+            limit: { type: 'string', integer: true, min: 1, max: 50, optional: true },
             offset: { type: 'number', integer: true, min: 0, optional: true }
           },
           handler: searchHandler

@@ -28,14 +28,14 @@ const brokerConfig: BrokerOptions = {
   requestTimeout: 10 * 1000, 
 
   // Hooks del broker
-  created(broker) {
+   created(broker) {
     console.log("🚀 MolecularJS Broker inicializado");
     console.log(`📊 Entorno: ${process.env.NODE_ENV || "development"}`);
   },
 
   started(broker) {
     console.log("✅ Todos los servicios iniciados");
-    console.log(`🌐 Puerto: ${process.env.PORT || 3000}`);
+    console.log(`🌐 Puerto: ${process.env.PORT || 3001}`);
   },
 
   stopped(broker) {

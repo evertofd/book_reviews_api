@@ -75,9 +75,6 @@ export default class AuthService extends Service {
         },
 
         getCurrentUser: {
-          params: {
-            token: { type: 'string', min: 10 }
-          },
           handler: getCurrentUserHandler
         }
       },

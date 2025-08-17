@@ -36,9 +36,7 @@ const SavedBookSchema = new Schema<ISavedBook>({
   
   review: {
     type: String,
-    required: [true, 'El review es requerido'],
     trim: true,
-    minlength: [1, 'El review debe tener al menos 1 caracter'],
     maxlength: [500, 'El review no puede tener más de 500 caracteres']
   },
   

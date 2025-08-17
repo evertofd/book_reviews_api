@@ -1,3 +1,4 @@
+import { Context as MoleculerContext } from 'moleculer';
 
 export interface JWTPayload {
   _id: string;
@@ -6,6 +7,11 @@ export interface JWTPayload {
   iat: number;
   exp: number; 
 }
+export interface ContextMeta {
+  user: JWTPayload; 
+  token: string;
+}
+export interface AuthContext<P = unknown> extends MoleculerContext<P, ContextMeta> {}
 
 
 export interface RegisterParams {
