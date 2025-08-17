@@ -10,17 +10,25 @@ import {
   getUserLibraryStats
 } from './methods';
 
-
+/**
+ * @Everto Farias
+ * @description: Health check del servicio de biblioteca personal
+ * @return: Promise<Object> - Estado del servicio con timestamp
+ */
 export const healthHandler = async (_ctx: Context) => ({
   service: 'library',
   status: 'ok',
   timestamp: new Date().toISOString()
 });
 
-
+/**
+ * @Everto Farias
+ * @description: Guarda libro en biblioteca personal del usuario validando duplicados
+ * @return: Promise<Object> - Libro guardado con confirmación de éxito
+ */
 export const saveBookHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
-  const bookData = ctx.params as any; // Cast simple
+  const bookData = ctx.params as any;
   const logger = ctx.service?.logger || console;
   
   try {    
@@ -45,7 +53,11 @@ export const saveBookHandler = async (ctx: Context) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Obtiene biblioteca del usuario con filtros, búsqueda, ordenamiento y estadísticas
+ * @return: Promise<Object> - Lista de libros con stats y filtros aplicados
+ */
 export const getMyBooksHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
   const { 
@@ -67,9 +79,7 @@ export const getMyBooksHandler = async (ctx: Context) => {
     );
     
     const stats = await getUserLibraryStats(user._id);
-    
-    logger.info(`Encontrados ${books.length} libros en biblioteca`);
-    
+        
     return {
       success: true,
       books,
@@ -89,7 +99,11 @@ export const getMyBooksHandler = async (ctx: Context) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Obtiene un libro específico de la biblioteca del usuario por ID
+ * @return: Promise<Object> - Libro encontrado o error si no existe
+ */
 export const getBookHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
   const { id } = ctx.params as any; 
@@ -113,7 +127,11 @@ export const getBookHandler = async (ctx: Context) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Actualiza review y calificación de un libro en la biblioteca del usuario
+ * @return: Promise<Object> - Libro actualizado con confirmación de éxito
+ */
 export const updateBookHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
   const { id, review, rating } = ctx.params as any; 
@@ -140,7 +158,11 @@ export const updateBookHandler = async (ctx: Context) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Elimina libro de la biblioteca personal del usuario por ID
+ * @return: Promise<Object> - Confirmación de eliminación exitosa
+ */
 export const deleteBookHandler = async (ctx: Context) => {
   const user = (ctx.meta as any).user;
   const { id } = ctx.params as any; 
@@ -166,6 +188,11 @@ export const deleteBookHandler = async (ctx: Context) => {
   }
 };
 
+/**
+ * @Everto Farias
+ * @description: Obtiene portada de libro guardado, decodifica base64 y retorna como buffer de imagen
+ * @return: Promise<Buffer> - Buffer de imagen con headers HTTP apropiados y cache
+ */
 export const getCoverHandler = async (ctx: Context) => {
   const { id } = ctx.params as any;
   const logger = ctx.service?.logger || console;

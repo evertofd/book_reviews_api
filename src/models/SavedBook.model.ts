@@ -7,39 +7,39 @@ const SavedBookSchema = new Schema<ISavedBook>({
     required: [true, 'User ID es requerido'],
     ref: 'User'
   },
-  
+
   title: {
     type: String,
     required: [true, 'El título es requerido'],
     trim: true,
     maxlength: [200, 'El título no puede tener más de 200 caracteres']
   },
-  
+
   author: {
     type: String,
     required: [true, 'El autor es requerido'],
     trim: true,
     maxlength: [100, 'El autor no puede tener más de 100 caracteres']
   },
-  
+
   publishYear: {
     type: String,
     required: [true, 'El año de publicación es requerido'],
     trim: true
   },
-  
+
   coverBase64: {
     type: String,
     required: false,
     default: null
   },
-  
+
   review: {
     type: String,
     trim: true,
     maxlength: [500, 'El review no puede tener más de 500 caracteres']
   },
-  
+
   rating: {
     type: Number,
     required: [true, 'La calificación es requerida'],
@@ -50,30 +50,30 @@ const SavedBookSchema = new Schema<ISavedBook>({
       message: 'La calificación debe ser un número entero'
     }
   },
-  
+
   openLibraryId: {
     type: String,
     required: false,
     trim: true
   },
-  
+
   isbn: {
     type: String,
     required: false,
     trim: true
   }
 }, {
-  timestamps: true, 
+  timestamps: true,
   collection: 'saved_books'
 });
 
 
-SavedBookSchema.index({ userId: 1 }); 
-SavedBookSchema.index({ userId: 1, title: 1, author: 1 }); 
-SavedBookSchema.index({ createdAt: -1 }); 
+SavedBookSchema.index({ userId: 1 });
+SavedBookSchema.index({ userId: 1, title: 1, author: 1 });
+SavedBookSchema.index({ createdAt: -1 });
 
 
-SavedBookSchema.statics.findByUserId = function(userId: string, limit = 20, offset = 0) {
+SavedBookSchema.statics.findByUserId = function (userId: string, limit = 20, offset = 0) {
   return this.find({ userId })
     .sort({ createdAt: -1 })
     .limit(limit)
@@ -81,21 +81,21 @@ SavedBookSchema.statics.findByUserId = function(userId: string, limit = 20, offs
 };
 
 
-SavedBookSchema.statics.existsForUser = async function(userId: string, title: string, author: string) {
-  const book = await this.findOne({ 
-    userId, 
-    title: { $regex: new RegExp(`^${title}$`, 'i') }, 
-    author: { $regex: new RegExp(`^${author}$`, 'i') } 
+SavedBookSchema.statics.existsForUser = async function (userId: string, title: string, author: string) {
+  const book = await this.findOne({
+    userId,
+    title: { $regex: new RegExp(`^${title}$`, 'i') },
+    author: { $regex: new RegExp(`^${author}$`, 'i') }
   });
   return !!book;
 };
 
 
-SavedBookSchema.statics.findByIdAndUser = function(bookId: string, userId: string) {
+SavedBookSchema.statics.findByIdAndUser = function (bookId: string, userId: string) {
   return this.findOne({ _id: bookId, userId });
 };
 
-SavedBookSchema.methods.toPublicJSON = function() {
+SavedBookSchema.methods.toPublicJSON = function () {
   const book = this.toObject();
   book._id = book._id.toString();
   book.userId = book.userId.toString();
@@ -103,9 +103,9 @@ SavedBookSchema.methods.toPublicJSON = function() {
 };
 
 
-SavedBookSchema.virtual('coverSizeKB').get(function() {
+SavedBookSchema.virtual('coverSizeKB').get(function () {
   if (!this.coverBase64) return 0;
-  
+
   const base64Length = this.coverBase64.length;
   const sizeInBytes = (base64Length * 3) / 4;
   return Math.round(sizeInBytes / 1024);

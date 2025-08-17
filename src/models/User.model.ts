@@ -15,22 +15,22 @@ const UserSchema = new Schema<IUser>({
       'Por favor ingresa un email válido'
     ]
   },
-  
+
   password: {
     type: String,
     required: [true, 'La contraseña es requerida'],
     minlength: [6, 'La contraseña debe tener al menos 6 caracteres'],
     validate: {
-      validator: function(password: string) {
+      validator: function (password: string) {
         // Al menos 6 caracteres, 1 mayúscula y 1 carácter especial
         const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
         return passwordRegex.test(password);
       },
       message: 'La contraseña debe tener al menos 6 caracteres, 1 mayúscula y 1 carácter especial (!@#$%^&*()_+-=[]{}|;:,.<>?)'
     },
-    select: false 
+    select: false
   },
-  
+
   alias: {
     type: String,
     required: [true, 'El alias es requerido'],
@@ -43,18 +43,18 @@ const UserSchema = new Schema<IUser>({
     ]
   }
 }, {
-  timestamps: true, 
+  timestamps: true,
   collection: 'users'
 });
 
 
 //UserSchema.index({ email: 1 }); 
-UserSchema.index({ alias: 1 }); 
+UserSchema.index({ alias: 1 });
 
 
-UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  
+
   try {
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
@@ -65,7 +65,7 @@ UserSchema.pre('save', async function(next) {
 });
 
 
-UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   try {
     return await bcrypt.compare(candidatePassword, this.password);
   } catch (error) {
@@ -75,7 +75,7 @@ UserSchema.methods.comparePassword = async function(candidatePassword: string): 
 };
 
 
-UserSchema.methods.toPublicJSON = function(): {
+UserSchema.methods.toPublicJSON = function (): {
   _id: string;
   email: string;
   alias: string;
@@ -88,17 +88,17 @@ UserSchema.methods.toPublicJSON = function(): {
   return user;
 };
 
-UserSchema.statics.findByEmailWithPassword = function(email: string) {
+UserSchema.statics.findByEmailWithPassword = function (email: string) {
   return this.findOne({ email }).select('+password');
 };
 
 
-UserSchema.statics.isAliasAvailable = async function(alias: string, excludeUserId?: string) {
+UserSchema.statics.isAliasAvailable = async function (alias: string, excludeUserId?: string) {
   const query: any = { alias };
   if (excludeUserId) {
     query._id = { $ne: excludeUserId };
   }
-  
+
   const existingUser = await this.findOne(query);
   return !existingUser;
 };

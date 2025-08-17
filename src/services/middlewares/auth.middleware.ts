@@ -1,6 +1,10 @@
 import { Context } from 'moleculer';
 
-
+/**
+ * @Everto Farias
+ * @description: Middleware de autenticación que valida token Bearer JWT y establece usuario en contexto
+ * @return: Promise<Object> - Usuario decodificado del token si es válido
+ */
 export const authenticateToken = async (ctx: Context, _route: any, req: any): Promise<any> => {
   try {
     const authHeader = req.headers.authorization;
@@ -24,7 +28,11 @@ export const authenticateToken = async (ctx: Context, _route: any, req: any): Pr
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Manejador de errores de autenticación que formatea respuesta HTTP 401 con estructura consistente
+ * @return: void - Envía respuesta JSON con error, mensaje y timestamp
+ */
 export const handleAuthError = (_req: any, res: any, err: any) => {
   console.error(' Error de autenticación:', err.message);
 

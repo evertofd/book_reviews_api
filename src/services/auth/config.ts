@@ -1,11 +1,20 @@
 import { JWTConfig } from '../../types/auth.types';
 
+/**
+ * @Everto Farias
+ * @description: Configuración JWT con secret, expiración y algoritmo desde variables de entorno
+ * @return: JWTConfig - Objeto tipado con configuración de tokens JWT
+ */
 export const jwtConfig: JWTConfig = {
-  secret: process.env.JWT_SECRET || 'default-secret-change-in-production',
+  secret: process.env.JWT_SECRET || 'quiero_amigos_1',
   expiresIn: Number(process.env.JWT_EXPIRES_IN) || 86400,
   algorithm: 'HS256'
 };
-
+/**
+ * @Everto Farias
+ * @description: Configuración centralizada del servicio Auth con validaciones, JWT y logging
+ * @return: Object - Configuración completa para autenticación y validación de campos
+ */
 export const authServiceConfig = {
   name: 'auth',
 
@@ -32,12 +41,12 @@ export const authServiceConfig = {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Valida que el JWT_SECRET esté definido en variables de entorno
+ * @return: void - Registra warning si JWT_SECRET no está configurado
+ */
 export const validateAuthConfig = (): void => {
-  if (jwtConfig.secret === 'default-secret-change-in-production') {
-    console.warn('Usando JWT secret por defecto - CAMBIAR EN PRODUCCIÓN');
-  }
-
   if (!process.env.JWT_SECRET) {
     console.warn('JWT_SECRET no está definido en variables de entorno');
   }

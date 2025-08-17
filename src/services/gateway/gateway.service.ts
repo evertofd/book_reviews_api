@@ -5,7 +5,11 @@ import { swaggerConfig } from '../../utils/swagger';
 
 
 export default class GatewayService extends Service {
-
+  /**
+   * @Everto Farias
+   * @description: Inicializa el servicio Gateway con configuración de rutas, CORS, autenticación y Swagger
+   * @return: void - Configura el servicio con mixins de ApiGateway
+   */
   constructor(broker: ServiceBroker) {
     super(broker);
 
@@ -141,7 +145,11 @@ export default class GatewayService extends Service {
           folder: 'public',
           options: {}
         },
-
+        /**
+         * @Everto Farias
+         * @description: Manejador global de errores del Gateway, formatea respuestas de error con estructura consistente
+         * @return: void - Envía respuesta JSON con error, código y timestamp
+         */
         onError(_req: any, res: any, err: any) {
           console.error(' Gateway Error:', err.message);
 
@@ -161,6 +169,11 @@ export default class GatewayService extends Service {
 
 
       methods: {
+        /**
+         * @Everto Farias  
+         * @description: Middleware de autorización que valida tokens JWT para rutas protegidas
+         * @return: Promise<boolean> - true si el token es válido, false o error si no
+        */
         async authorize(ctx: any, route: any, req: any) {
           return await authenticateToken(ctx, route, req);
         }
@@ -173,20 +186,32 @@ export default class GatewayService extends Service {
     });
   }
 
-
+  /**
+   * @Everto Farias
+   * @description: Hook de ciclo de vida ejecutado cuando el servicio es creado
+   * @return: Promise<void> - Registra log de creación del servicio
+   */
   async serviceCreated(): Promise<void> {
     this.logger.info('Gateway Service creado');
   }
 
-
+  /**
+   * @Everto Farias
+   * @description: Hook de ciclo de vida ejecutado cuando el servicio inicia, muestra información de endpoints disponibles
+   * @return: Promise<void> - Registra logs informativos sobre puerto y URLs disponibles
+   */
   async serviceStarted(): Promise<void> {
     const port = this.settings.port;
     this.logger.info(`API Gateway iniciado en puerto ${port}`);
     this.logger.info(`API disponible en: http://localhost:${port}/api`);
     this.logger.info(`Health check: http://localhost:${port}/api/auth/health`);
   }
-
+  /**
+   * @Everto Farias
+   * @description: Hook de ciclo de vida ejecutado cuando el servicio se detiene
+   * @return: Promise<void> - Registra log de detención del servicio
+   */
   async serviceStopped(): Promise<void> {
-    this.logger.info('🌐 Gateway Service detenido');
+    this.logger.info('Gateway Service detenido');
   }
 }

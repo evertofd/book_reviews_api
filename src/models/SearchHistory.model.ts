@@ -8,7 +8,7 @@ const SearchHistorySchema = new Schema<ISearchHistory>({
     required: [true, 'User ID es requerido'],
     ref: 'User'
   },
-  
+
   query: {
     type: String,
     required: [true, 'La query de búsqueda es requerida'],
@@ -26,7 +26,7 @@ SearchHistorySchema.index({ userId: 1, createdAt: -1 });
 SearchHistorySchema.index({ userId: 1, query: 1 });
 
 
-SearchHistorySchema.methods.toPublicJSON = function() {
+SearchHistorySchema.methods.toPublicJSON = function () {
   return {
     query: this.query,
     createdAt: this.createdAt

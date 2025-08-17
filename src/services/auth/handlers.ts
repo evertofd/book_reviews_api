@@ -16,11 +16,20 @@ import {
   formatAuthResponse
 } from './methods';
 
+/**
+ * @Everto Farias
+ * @description: Obtiene logger del contexto del servicio o usa console como fallback
+ * @return: Logger - Instancia de logger para registro de eventos
+ */
 const getLogger = (ctx: Context) => {
   return ctx.service?.logger || console;
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Health check que verifica estado del servicio y configuración JWT
+ * @return: Object - Estado completo con JWT configurado, uptime y timestamp
+ */
 export const healthHandler = (_ctx: Context): object => {
   return {
     service: 'auth',
@@ -31,7 +40,11 @@ export const healthHandler = (_ctx: Context): object => {
   };
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Registra nuevo usuario validando email/alias y crea el usuario.
+ * @return: Promise<AuthResponse> - Usuario creado con token JWT y mensaje de éxito
+ */
 export const registerHandler = async (ctx: Context<RegisterParams>): Promise<AuthResponse> => {
   try {
     const { email, password, alias } = ctx.params;
@@ -69,7 +82,11 @@ export const registerHandler = async (ctx: Context<RegisterParams>): Promise<Aut
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Autentica usuario con email/password, valida credenciales y genera token JWT
+ * @return: Promise<AuthResponse> - Token JWT y datos del usuario autenticado
+ */
 export const loginHandler = async (ctx: Context<LoginParams>): Promise<AuthResponse> => {
   try {
     const { email, password } = ctx.params;
@@ -90,12 +107,16 @@ export const loginHandler = async (ctx: Context<LoginParams>): Promise<AuthRespo
 
   } catch (error: any) {
     const logger = getLogger(ctx);
-    logger.error('❌ Error en login:', error.message);
+    logger.error('Error en login:', error.message);
     throw new Error(`Error en login: ${error.message}`);
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Verifica validez de token JWT y retorna datos decodificados del usuario
+ * @return: Promise<Object> - Usuario decodificado si el token es válido
+ */
 export const verifyTokenHandler = async (ctx: Context<VerifyTokenParams>) => {
   try {
     const { token } = ctx.params;
@@ -111,7 +132,11 @@ export const verifyTokenHandler = async (ctx: Context<VerifyTokenParams>) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Maneja logout del usuario (stateless JWT, solo confirma acción)
+ * @return: Object - Confirmación de logout exitoso
+ */
 export const logoutHandler = (ctx: Context): object => {
   const logger = getLogger(ctx);
 
@@ -122,8 +147,11 @@ export const logoutHandler = (ctx: Context): object => {
     message: 'Logout exitoso'
   };
 };
-
-
+/**
+ * @Everto Farias
+ * @description: Obtiene datos del usuario actual verificando token desde meta context
+ * @return: Promise<Object> - Datos públicos del usuario autenticado
+ */
 export const getCurrentUserHandler = async (ctx: Context<AuthContext>): Promise<object> => {
   try {
     

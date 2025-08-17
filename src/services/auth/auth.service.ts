@@ -14,7 +14,11 @@ import {
 dotenv.config();
 
 export default class AuthService extends Service {
-
+  /**
+   * @Everto Farias
+   * @description: Inicializa servicio de autenticación con validación de config, acciones JWT y eventos de usuario
+   * @return: void - Configura servicio con validaciones estrictas y manejo de tokens
+   */
   constructor(broker: ServiceBroker) {
     super(broker);
 
@@ -24,9 +28,19 @@ export default class AuthService extends Service {
       name: authServiceConfig.name,
       settings: authServiceConfig,
       actions: {
+        /**
+         * @Everto Farias
+         * @description: Endpoint de health check para verificar estado del servicio de autenticación
+         * @return: Object - Estado del servicio y conectividad con base de datos
+         */
         health: {
           handler: healthHandler
         },
+        /**
+         * @Everto Farias
+         * @description: Registra nuevo usuario validando email, password y alias según configuración
+         * @return: Object - Usuario creado con token JWT y datos básicos
+         */
         register: {
           params: {
             email: {
@@ -47,6 +61,11 @@ export default class AuthService extends Service {
           },
           handler: registerHandler
         },
+        /**
+         * @Everto Farias
+         * @description: Autentica usuario existente con email y password, genera token JWT
+         * @return: Object - Token JWT y datos del usuario autenticado
+         */
         login: {
           params: {
             email: {
@@ -62,18 +81,30 @@ export default class AuthService extends Service {
           },
           handler: loginHandler
         },
-
+        /**
+         * @Everto Farias
+         * @description: Verifica validez de token JWT y retorna datos del usuario
+         * @return: Object - Usuario decodificado del token si es válido
+         */
         verifyToken: {
           params: {
-            token: { type: 'string', min: 10 }
+            token: { type: 'string'}
           },
           handler: verifyTokenHandler
         },
-
+        /**
+         * @Everto Farias
+         * @description: Maneja cierre de sesión del usuario (invalidación de token)
+         * @return: Object - Confirmación de logout exitoso
+         */
         logout: {
           handler: logoutHandler
         },
-
+        /**
+         * @Everto Farias
+         * @description: Obtiene datos del usuario actual desde el contexto autenticado
+         * @return: Object - Información del usuario logueado
+         */
         getCurrentUser: {
           handler: getCurrentUserHandler
         }
@@ -91,15 +122,18 @@ export default class AuthService extends Service {
 
 
   async onUserRegistered(payload: { userId: string; email: string; alias: string }): Promise<void> {
-    this.logger.info(`📧 Evento - Usuario registrado: ${payload.email}`);
+    this.logger.info(` Evento - Usuario registrado: ${payload.email}`);
   }
 
 
   async serviceCreated(): Promise<void> {
     this.logger.info('Auth Service creado');
   }
-
-
+  /**
+   * @Everto Farias
+   * @description: Hook de inicio que conecta a base de datos y muestra configuración JWT
+   * @return: Promise<void> - Establece conexión DB y registra configuración
+   */
   async serviceStarted(): Promise<void> {
     this.logger.info('Auth Service iniciado');
     await connectToDatabase();

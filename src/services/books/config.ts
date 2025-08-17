@@ -1,4 +1,8 @@
-
+/**
+ * @Everto Farias
+ * @description: Configuración centralizada del servicio Books con URLs, límites de búsqueda y cache
+ * @return: Object - Configuración completa para integración con OpenLibrary API
+ */
 export const booksServiceConfig = {
   name: 'books',
 
@@ -21,7 +25,11 @@ export const booksServiceConfig = {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Valida la configuración del servicio Books y muestra warnings si faltan parámetros críticos
+ * @return: void - Registra logs de validación y configuración actual
+ */
 export const validateBooksConfig = () => {
   if (!booksServiceConfig.openLibraryBaseUrl) {
     console.warn('No hay URL de OpenLibrary definida, se usará la por defecto');

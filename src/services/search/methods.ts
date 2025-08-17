@@ -1,6 +1,12 @@
 import SearchHistory from '../../models/SearchHistory.model';
 import { searchServiceConfig } from './config';
 
+/**
+ * @Everto Farias
+ * @description: Obtiene las últimas búsquedas del usuario ordenadas por fecha descendente
+ * @return: Promise<Object[]> - Array de búsquedas con query y fecha de creación
+ */
+
 export const getLastSearches = async (userId: string, limit = searchServiceConfig.history.returnLimit) => {
   const searches = await SearchHistory.find({ userId })
     .sort({ createdAt: -1 })
@@ -14,7 +20,11 @@ export const getLastSearches = async (userId: string, limit = searchServiceConfi
   }));
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Guarda búsqueda en historial si no existe y limpia registros antiguos
+ * @return: Promise<void> - Guarda búsqueda única y mantiene límite de historial
+ */
 export const saveSearch = async (userId: string, query: string) => {
   try {
     const recentSearches = await getLastSearches(userId, searchServiceConfig.history.returnLimit);
@@ -34,7 +44,11 @@ export const saveSearch = async (userId: string, query: string) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Elimina búsquedas antiguas que excedan el límite máximo configurado manteniendo las más recientes
+ * @return: Promise<void> - Mantiene solo maxSearches registros por usuario
+ */
 export const cleanupOldSearches = async (userId: string) => {
   const maxSearches = searchServiceConfig.history.maxSearches;
   const allSearches = await SearchHistory.find({ userId })
@@ -47,7 +61,11 @@ export const cleanupOldSearches = async (userId: string) => {
   }
 };
 
-
+/**
+ * @Everto Farias
+ * @description: Calcula estadísticas de búsqueda del usuario incluyendo total y última búsqueda
+ * @return: Promise<Object> - Stats con total de búsquedas y datos de la más reciente
+ */
 export const getUserSearchStats = async (userId: string) => {
   const totalSearches = await SearchHistory.countDocuments({ userId });
   const lastSearch = await SearchHistory.findOne({ userId })
